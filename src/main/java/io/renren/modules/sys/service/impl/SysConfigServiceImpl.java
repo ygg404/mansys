@@ -2,6 +2,7 @@
 package io.renren.modules.sys.service.impl;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,6 +37,11 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 						.eq("status", 1));
 
 		return new PageUtils(page);
+	}
+
+	@Override
+	public List<SysConfigEntity> queryList(Map<String, Object> params){
+		return this.selectList(new EntityWrapper<>());
 	}
 
 	@Override

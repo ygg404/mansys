@@ -46,12 +46,14 @@ public class SysGeneratorController {
 //	@RequiresPermissions("sys:generator")
 	public void code(String tables, HttpServletResponse response) throws IOException{
 		byte[] data = sysGeneratorService.generatorCode(tables.split(","));
-		
-		response.reset();  
-        response.setHeader("Content-Disposition", "attachment; filename=\"renren.zip\"");  
-        response.addHeader("Content-Length", "" + data.length);  
-        response.setContentType("application/octet-stream; charset=UTF-8");  
-  
-        IOUtils.write(data, response.getOutputStream());  
+
+		response.reset();
+		response.addHeader("Access-Control-Allow-Origin" , "*");
+		response.setHeader("Access-Control-Allow-Credentials" ,"false");
+		response.setHeader("Content-Disposition", "attachment; filename=\"renren.zip\"");
+		response.addHeader("Content-Length", "" + data.length);
+		response.setContentType("application/octet-stream; charset=UTF-8");
+
+		IOUtils.write(data, response.getOutputStream());
 	}
 }

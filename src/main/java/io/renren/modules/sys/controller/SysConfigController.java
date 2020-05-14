@@ -1,6 +1,7 @@
 
 package io.renren.modules.sys.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -35,14 +36,25 @@ public class SysConfigController extends AbstractController {
 	private SysConfigService sysConfigService;
 
 	/**
-	 * 所有配置列表
+	 * 配置分页列表
+	 */
+	@GetMapping("/page")
+//	@RequiresPermissions("sys:config:list")
+	public R page(@RequestParam Map<String, Object> params) {
+		PageUtils page = sysConfigService.queryPage(params);
+
+		return R.ok().put("page", page);
+	}
+
+	/**
+	 * 配置列表
 	 */
 	@GetMapping("/list")
 //	@RequiresPermissions("sys:config:list")
 	public R list(@RequestParam Map<String, Object> params) {
-		PageUtils page = sysConfigService.queryPage(params);
+		List<SysConfigEntity> list = sysConfigService.queryList(params);
 
-		return R.ok().put("page", page);
+		return R.ok().put("list", list);
 	}
 
 	/**
