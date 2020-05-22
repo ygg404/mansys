@@ -1,6 +1,7 @@
 package io.renren.modules.man.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +30,11 @@ public class ManNovelServiceImpl extends ServiceImpl<ManNovelDao, ManNovelEntity
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public ManNovelEntity findOne(String paurl){
+        return  this.selectOne(new EntityWrapper<ManNovelEntity>().eq("paurl",paurl));
     }
 
     @Override

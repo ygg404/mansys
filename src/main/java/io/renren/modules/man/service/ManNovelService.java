@@ -16,6 +16,8 @@ public interface ManNovelService extends IService<ManNovelEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
+    ManNovelEntity findOne(String paurl);
+
     void save(ManNovelEntity entity);
 
     void update(ManNovelEntity entity);

@@ -6,9 +6,12 @@ import java.util.Arrays;
 import java.util.Map;
 
 import io.renren.common.utils.DateUtils;
+import io.renren.modules.man.entity.ManNovelEntity;
+import io.renren.modules.man.service.ManNovelService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,29 +39,58 @@ import io.renren.common.utils.R;
 public class ManImgController {
     @Autowired
     private ManImgService manImgService;
+    @Autowired
+    private ManNovelService manNovelService;
 
     @RequestMapping("/pa")
     public R pa(){
         try{
             String Url = "https://manhua.fzdm.com/132/";
-            Document document = Jsoup.connect(Url)
-                    .timeout(10000)
-                    .ignoreContentType(true)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
-                    .get();
+            // 漫画主链接主页面
+            Document document = getDoc(Url);
+            String manName = document.select("title").eq(0).text();
+            // 查找是否存在该漫画
+            ManNovelEntity entity = manNovelService.findOne(Url);
+            if(entity == null){
+                entity.setManname(manName);
+                entity.setPaurl(Url);
+                entity.setKeys(manName + " " + "免费漫画观看,YGG免费漫画观看");
+            }
 
-            Elements element = document.select(".w_r").eq(1).select("li");
+            Elements liele = document.select("li[class=pure-u-1-2 pure-u-lg-1-4]");
 //            document.select("meta").attr("property","og:title").attr("name","keywords")
-            String title = document.select("title").eq(0).text();
-            element.forEach(em->{
-                String href = em.select("a").attr("href");
-//                String title = em.select("a").text().replace("search","");
-
-            });
-        }catch (IOException e){
+            for(int i=liele.size()-1; i>=0; i--){
+                Element em = liele.get(i);
+                String sectionHref = em.select("a").attr("href");
+                String sectionTitle = em.select("a").text();
+                System.out.println(sectionTitle);
+            }
+//            liele.forEach(em->{
+//
+////                String title = em.select("a").text().replace("search","");
+//
+//            });
+        }catch (Exception e){
             e.printStackTrace();
         }
         return R.ok();
+    }
+
+    public Document getDoc(String url){
+        Document doc;
+        while (true){
+            try {
+                doc = Jsoup.connect(url)
+                        .timeout(10000)
+                        .ignoreContentType(true)
+                        .userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
+                        .get();
+                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return doc;
     }
 
     /**

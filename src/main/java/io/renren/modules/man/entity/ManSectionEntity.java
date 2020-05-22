@@ -24,7 +24,7 @@ public class ManSectionEntity implements Serializable {
 	/**
 	 * 章节ID
 	 */
-	private Long sectionid;
+	private String sectionid;
 	/**
 	 * 漫画书名Id
 	 */
@@ -45,11 +45,11 @@ public class ManSectionEntity implements Serializable {
 	/**
 	* 获取：章节ID
 	*/
-	public Long getSectionid (){return this.sectionid;};
+	public String getSectionid (){return this.sectionid;};
 	/**
 	 * 设置：章节ID
 	 */
-	public void setSectionid (Long sectionid){this.sectionid = sectionid;};
+	public void setSectionid (String sectionid){this.sectionid = sectionid;};
 	/**
 	* 获取：漫画书名Id
 	*/
