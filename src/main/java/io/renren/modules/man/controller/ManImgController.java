@@ -5,6 +5,7 @@ import java.security.Timestamp;
 import java.util.Arrays;
 import java.util.Map;
 
+import io.renren.common.spider.ContentUitls;
 import io.renren.common.utils.DateUtils;
 import io.renren.modules.man.entity.ManNovelEntity;
 import io.renren.modules.man.service.ManNovelService;
@@ -47,7 +48,7 @@ public class ManImgController {
         try{
             String Url = "https://manhua.fzdm.com/132/";
             // 漫画主链接主页面
-            Document document = getDoc(Url);
+            Document document = ContentUitls.getContent(Url);
             String manName = document.select("title").eq(0).text();
             // 查找是否存在该漫画
             ManNovelEntity entity = manNovelService.findOne(Url);
@@ -65,6 +66,7 @@ public class ManImgController {
                 String sectionTitle = em.select("a").text();
                 System.out.println(sectionTitle);
             }
+
 //            liele.forEach(em->{
 //
 ////                String title = em.select("a").text().replace("search","");
@@ -74,23 +76,6 @@ public class ManImgController {
             e.printStackTrace();
         }
         return R.ok();
-    }
-
-    public Document getDoc(String url){
-        Document doc;
-        while (true){
-            try {
-                doc = Jsoup.connect(url)
-                        .timeout(10000)
-                        .ignoreContentType(true)
-                        .userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
-                        .get();
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return doc;
     }
 
     /**
