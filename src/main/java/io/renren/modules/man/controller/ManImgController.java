@@ -46,25 +46,47 @@ public class ManImgController {
     @RequestMapping("/pa")
     public R pa(){
         try{
-            String Url = "https://manhua.fzdm.com/132/";
+            String baseUrl = "http://www.yhdm.tv";
+            String Url = "http://www.yhdm.tv/show/4066.html";
             // 漫画主链接主页面
             Document document = ContentUitls.getContent(Url);
             String manName = document.select("title").eq(0).text();
             // 查找是否存在该漫画
             ManNovelEntity entity = manNovelService.findOne(Url);
             if(entity == null){
+                entity = new ManNovelEntity();
                 entity.setManname(manName);
                 entity.setPaurl(Url);
                 entity.setKeys(manName + " " + "免费漫画观看,YGG免费漫画观看");
             }
 
-            Elements liele = document.select("li[class=pure-u-1-2 pure-u-lg-1-4]");
-//            document.select("meta").attr("property","og:title").attr("name","keywords")
-            for(int i=liele.size()-1; i>=0; i--){
-                Element em = liele.get(i);
+            String status = document.select("div[class=sinfo]").select("p").text();
+            Elements ainfo = document.select("div[class=sinfo]").select("span");
+            ainfo.forEach( em ->{
+
+            });
+
+            Elements aherf = document.select("div[class=movurl]").select("ul").select("li");
+            for(int i=aherf.size()-1; i>=0; i--){
+                Element em = aherf.get(i);
                 String sectionHref = em.select("a").attr("href");
                 String sectionTitle = em.select("a").text();
                 System.out.println(sectionTitle);
+
+                // 动漫的附链接视频
+                Document videoDoc = ContentUitls.getContent(baseUrl + sectionHref);
+                String videoUrl = "http://tup.yhdm.tv/?vid=" + videoDoc.select("div[class=bofang]").select("div[id=playbox]").attr("data-vid");
+                Document videoUrlDoc = ContentUitls.getContent(videoUrl);
+                String videoSrc = videoUrlDoc.select("video").attr("src");
+
+                Elements scriptEles = videoUrlDoc.select("script");
+                String regex = "video: {.*?";
+                scriptEles.forEach( script-> {
+//                    script.childNodes.forEach(note ->{
+//                        System.out.println(note);
+//                    });
+
+                });
             }
 
 //            liele.forEach(em->{
