@@ -1,16 +1,29 @@
 package io.renren.modules.man.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.Timestamp;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import io.renren.common.spider.ContentUitls;
-import io.renren.common.utils.DateUtils;
+
+import io.renren.common.utils.UuidUtil;
+
 import io.renren.modules.man.entity.ManNovelEntity;
+import io.renren.modules.man.entity.ManSectionEntity;
 import io.renren.modules.man.service.ManNovelService;
+import io.renren.modules.man.service.ManSectionService;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.jsoup.Jsoup;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -42,12 +55,14 @@ public class ManImgController {
     private ManImgService manImgService;
     @Autowired
     private ManNovelService manNovelService;
+    @Autowired
+    private ManSectionService manSectionService;
 
     @RequestMapping("/pa")
     public R pa(){
         try{
-            String baseUrl = "http://www.yhdm.tv";
-            String Url = "http://www.yhdm.tv/show/4066.html";
+            String baseUrl = "http://www.imomoe.in";
+            String Url = "http://www.imomoe.in/view/7388.html";
             // 漫画主链接主页面
             Document document = ContentUitls.getContent(Url);
             String manName = document.select("title").eq(0).text();
@@ -55,16 +70,45 @@ public class ManImgController {
             ManNovelEntity entity = manNovelService.findOne(Url);
             if(entity == null){
                 entity = new ManNovelEntity();
+                // 获取最大的自增ID
+                List<ManNovelEntity> list = manNovelService.selectList(new EntityWrapper<ManNovelEntity>().orderBy("manId",false));
+                if (list.size() < 1) {
+                    entity.setManid(1000001L);
+                } else {
+                    entity.setManid(list.get(0).getManid() + 1);
+                }
                 entity.setManname(manName);
                 entity.setPaurl(Url);
-                entity.setKeys(manName + " " + "免费漫画观看,YGG免费漫画观看");
+                entity.setKeys(manName + " " + "免费动漫观看");
+            }
+            String contInfo = document.select("div[class=info]").first().text();
+            entity.setContent(contInfo);
+            Elements pinfo = document.select("div[class=alex]").select("p");
+            for(Element info : pinfo){
+                if (info.text().indexOf("别名：") >= 0) {
+                    entity.setOthername(info.text().replace("别名：",""));
+                }else {
+                    entity.setStatus(info.text());
+                }
             }
 
-            String status = document.select("div[class=sinfo]").select("p").text();
-            Elements ainfo = document.select("div[class=sinfo]").select("span");
-            ainfo.forEach( em ->{
+            Elements infoList = document.select("div[class=alex]").select("span");
+            for(Element info : infoList){
+                if (info.text().indexOf("地区：") >= 0) {
+                    entity.setArea(info.text().replace("地区：",""));
+                }
+                if (info.text().indexOf("类型：") >= 0) {
+                    entity.setCategory(info.text().replace("类型：",""));
+                }
+                if (info.text().indexOf("年代：") >= 0) {
+                    entity.setDisplayTime( info.text().replace("年代：",""));
+                }
+                if (info.text().indexOf("标签：") >= 0) {
+                    entity.setLabel(info.text().replace("标签：",""));
+                }
+            }
 
-            });
+            manNovelService.insertOrUpdate(entity);
 
             Elements aherf = document.select("div[class=movurl]").select("ul").select("li");
             for(int i=aherf.size()-1; i>=0; i--){
@@ -75,18 +119,44 @@ public class ManImgController {
 
                 // 动漫的附链接视频
                 Document videoDoc = ContentUitls.getContent(baseUrl + sectionHref);
-                String videoUrl = "http://tup.yhdm.tv/?vid=" + videoDoc.select("div[class=bofang]").select("div[id=playbox]").attr("data-vid");
-                Document videoUrlDoc = ContentUitls.getContent(videoUrl);
-                String videoSrc = videoUrlDoc.select("video").attr("src");
+                String jsUrl = baseUrl + videoDoc.select("div[class=player]").select("script[type=text/javascript]").first().attr("src");
+                //通过url获得连接
+                URL u = new URL(jsUrl);
+                URLConnection yc = u.openConnection();
+                //读取返回的数据
+                BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream(),"UTF-8"));
+                String inputline = null;
+                String listJson = "";
+                while((inputline=in.readLine())!=null){
+                    listJson += inputline;
+                }
+                in.close();
+                // 正则匹配
+                Pattern p = Pattern.compile("\\[\'(.*?)\\\']");
+                Matcher m = p.matcher(listJson);
+                if(m.find()){
+                    String[] jsonList = m.group(0).split("','");
+                    for(int index = jsonList.length - 1; index >= 0 ; index--){
+                        String urlJson = jsonList[index];
+                        String videoUrl = urlJson.substring(urlJson.indexOf("$") + 1 , urlJson.lastIndexOf("$"));
+                        String videoName = urlJson.substring(urlJson.indexOf("\\u") , urlJson.indexOf("$"));
+                        videoName = new String(StringEscapeUtils.unescapeJava(videoName).getBytes(),"utf-8");
 
-                Elements scriptEles = videoUrlDoc.select("script");
-                String regex = "video: {.*?";
-                scriptEles.forEach( script-> {
-//                    script.childNodes.forEach(note ->{
-//                        System.out.println(note);
-//                    });
-
-                });
+                        ManSectionEntity sectionEntity = manSectionService.selectOne(
+                                new EntityWrapper<ManSectionEntity>().eq("manId",entity.getManid()).eq("title",videoName));
+                        if (sectionEntity == null) {
+                            sectionEntity = new ManSectionEntity();
+                            sectionEntity.setManid(entity.getManid());
+                            sectionEntity.setSectionid(UuidUtil.getShortUUID());
+                            sectionEntity.setTitle(videoName);
+                            sectionEntity.setVideoUrl(videoUrl);
+                            manSectionService.insert(sectionEntity);
+                        } else {
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
 
 //            liele.forEach(em->{

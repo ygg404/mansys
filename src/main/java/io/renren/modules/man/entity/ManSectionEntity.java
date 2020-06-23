@@ -10,7 +10,7 @@ import java.util.Date;
  * 章节与漫画关系表
  * 
  * @author ygg
- * @date 2020-05-11 10:06:03
+ * @date 2020-06-23 14:28:23
  */
 @TableName("man_section")
 public class ManSectionEntity implements Serializable {
@@ -33,6 +33,14 @@ public class ManSectionEntity implements Serializable {
 	 * 章节名
 	 */
 	private String title;
+	/**
+	 * 视频链接
+	 */
+	private String videoUrl;
+	/**
+	 * 窗口链接
+	 */
+	private String iframeUrl;
 
 	/**
 	* 获取：自增id
@@ -66,4 +74,20 @@ public class ManSectionEntity implements Serializable {
 	 * 设置：章节名
 	 */
 	public void setTitle (String title){this.title = title;};
+	/**
+	* 获取：视频链接
+	*/
+	public String getVideoUrl (){return this.videoUrl;};
+	/**
+	 * 设置：视频链接
+	 */
+	public void setVideoUrl (String videoUrl){this.videoUrl = videoUrl;};
+	/**
+	* 获取：窗口链接
+	*/
+	public String getIframeUrl (){return this.iframeUrl;};
+	/**
+	 * 设置：窗口链接
+	 */
+	public void setIframeUrl (String iframeUrl){this.iframeUrl = iframeUrl;};
 }
