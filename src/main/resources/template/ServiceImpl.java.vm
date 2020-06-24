@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.List;
 import ${mainPath}.common.utils.PageUtils;
 import ${mainPath}.common.utils.Query;
 
@@ -29,6 +30,14 @@ public class ${className}ServiceImpl extends ServiceImpl<${className}Dao, ${clas
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<${className}Entity> queryList(Map<String, Object> params){
+        List<${className}Entity> list = this.selectList(
+                new EntityWrapper<${className}Entity>()
+        );
+        return list;
     }
 
     @Override

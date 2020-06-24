@@ -93,7 +93,7 @@
                   type: 'success',
                   duration: 1500
                 })
-                 this.visible = false
+                this.visible = false
                 #[[this.$emit('refreshDataList')]]#
               } else {
                 #[[this.$message.error(data.msg)]]#

@@ -2,6 +2,7 @@ package ${package}.${moduleName}.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +32,26 @@ public class ${className}Controller {
     private ${className}Service ${classname}Service;
 
     /**
-     * 列表
+     * 分页查询
      */
-    @RequestMapping("/list")
-    @RequiresPermissions("${moduleName}:${pathName}:list")
-    public R list(@RequestParam Map<String, Object> params){
+    @RequestMapping("/page")
+    @RequiresPermissions("${moduleName}:${pathName}:page")
+    public R page(@RequestParam Map<String, Object> params){
         PageUtils page = ${classname}Service.queryPage(params);
 
         return R.ok().put("page", page);
     }
 
+    /**
+     * 列表
+     */
+    @RequestMapping("/list")
+    @RequiresPermissions("${moduleName}:${pathName}:list")
+    public R list(@RequestParam Map<String, Object> params){
+        List<${className}Entity> list = ${classname}Service.queryList(params);
+
+        return R.ok().put("list", list);
+    }
 
     /**
      * 信息

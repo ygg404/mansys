@@ -15,7 +15,7 @@ spring:
         uploadFolder: E://upload//file//
         upContractFolder: E://upload//contract//
         upReportFolder: E://upload//report//
-        downImgFolder: E://manhua//
+        downImgFolder: E://manhua//mainImg//
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver

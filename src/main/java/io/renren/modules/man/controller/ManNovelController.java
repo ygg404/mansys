@@ -2,6 +2,7 @@ package io.renren.modules.man.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.List;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import io.renren.common.utils.R;
  * 漫画内容简介
  *
  * @author ygg
- * @date 2020-05-11 10:06:04
+ * @date 2020-06-24 16:25:57
  */
 @RestController
 @RequestMapping("man/mannovel")
@@ -31,16 +32,26 @@ public class ManNovelController {
     private ManNovelService manNovelService;
 
     /**
-     * 列表
+     * 分页查询
      */
-    @RequestMapping("/list")
-    @RequiresPermissions("man:mannovel:list")
-    public R list(@RequestParam Map<String, Object> params){
+    @RequestMapping("/page")
+    @RequiresPermissions("man:mannovel:page")
+    public R page(@RequestParam Map<String, Object> params){
         PageUtils page = manNovelService.queryPage(params);
 
         return R.ok().put("page", page);
     }
 
+    /**
+     * 列表
+     */
+    @RequestMapping("/list")
+    @RequiresPermissions("man:mannovel:list")
+    public R list(@RequestParam Map<String, Object> params){
+        List<ManNovelEntity> list = manNovelService.queryList(params);
+
+        return R.ok().put("list", list);
+    }
 
     /**
      * 信息

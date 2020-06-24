@@ -2,16 +2,16 @@ package io.renren.modules.man.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 漫画内容简介
  * 
  * @author ygg
- * @date 2020-06-23 14:38:19
+ * @date 2020-06-24 16:25:57
  */
 @TableName("man_novel")
 public class ManNovelEntity implements Serializable {
@@ -30,6 +30,10 @@ public class ManNovelEntity implements Serializable {
 	 * 别名
 	 */
 	private String othername;
+	/**
+	 * 标题图片
+	 */
+	private String imgUrl;
 	/**
 	 * 作者
 	 */
@@ -63,13 +67,13 @@ public class ManNovelEntity implements Serializable {
 	 */
 	private Long isenable;
 	/**
-	 * 标签
-	 */
-	private String label;
-	/**
 	 * 上映时间
 	 */
 	private String displayTime;
+	/**
+	 * 标签
+	 */
+	private String label;
 
 	/**
 	* 获取：漫画ID
@@ -95,6 +99,14 @@ public class ManNovelEntity implements Serializable {
 	 * 设置：别名
 	 */
 	public void setOthername (String othername){this.othername = othername;};
+	/**
+	* 获取：标题图片
+	*/
+	public String getImgUrl (){return this.imgUrl;};
+	/**
+	 * 设置：标题图片
+	 */
+	public void setImgUrl (String imgUrl){this.imgUrl = imgUrl;};
 	/**
 	* 获取：作者
 	*/
