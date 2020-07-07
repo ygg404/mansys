@@ -3,6 +3,7 @@ package io.renren.modules.webapi;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import io.renren.common.spider.ContentUitls;
 import io.renren.common.utils.FileUtil;
+import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 import io.renren.common.utils.UuidUtil;
 import io.renren.modules.html.entity.HtmlPartEntity;
@@ -13,12 +14,15 @@ import io.renren.modules.man.service.ManImgService;
 import io.renren.modules.man.service.ManNovelService;
 import io.renren.modules.man.service.ManSectionService;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
@@ -28,6 +32,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +44,23 @@ public class HtmlController {
 
     @Autowired
     private HtmlPartService htmlPartService;
+
+    @RequestMapping("/h5page")
+    public R page(@RequestParam Map<String, Object> params){
+        PageUtils page = htmlPartService.queryPage(params);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
+     * 信息
+     */
+    @RequestMapping("/info/{id}")
+    public R info(@PathVariable("id") Long id){
+        HtmlPartEntity htmlPart = htmlPartService.selectById(id);
+
+        return R.ok().put("htmlPart", htmlPart);
+    }
 
     @RequestMapping("/pa")
     public R pa(){

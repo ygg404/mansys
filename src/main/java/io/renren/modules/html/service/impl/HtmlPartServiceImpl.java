@@ -23,10 +23,12 @@ public class HtmlPartServiceImpl extends ServiceImpl<HtmlPartDao, HtmlPartEntity
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         String key = (String)params.get("key");
+        String cate = (String)params.get("cate");
 
         Page<HtmlPartEntity> page = this.selectPage(
                 new Query<HtmlPartEntity>(params).getPage(),
                 new EntityWrapper<HtmlPartEntity>().like(StringUtils.isNotBlank(key),"id", key)
+                .and().eq(StringUtils.isNotBlank(cate),"cate", cate)
         );
 
         return new PageUtils(page);
