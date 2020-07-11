@@ -1,4 +1,4 @@
-package io.renren.modules.html.service.impl;
+package io.renren.modules.article.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -12,45 +12,43 @@ import java.util.List;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.Query;
 
-import io.renren.modules.html.dao.HtmlPartDao;
-import io.renren.modules.html.entity.HtmlPartEntity;
-import io.renren.modules.html.service.HtmlPartService;
+import io.renren.modules.article.dao.ArticleContentDao;
+import io.renren.modules.article.entity.ArticleContentEntity;
+import io.renren.modules.article.service.ArticleContentService;
 
 
-@Service("htmlPartService")
-public class HtmlPartServiceImpl extends ServiceImpl<HtmlPartDao, HtmlPartEntity> implements HtmlPartService {
+@Service("articleContentService")
+public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentDao, ArticleContentEntity> implements ArticleContentService {
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         String key = (String)params.get("key");
-        String cate = (String)params.get("cate");
 
-        Page<HtmlPartEntity> page = this.selectPage(
-                new Query<HtmlPartEntity>(params).getPage(),
-                new EntityWrapper<HtmlPartEntity>().like(StringUtils.isNotBlank(key),"title", key)
-                .eq(StringUtils.isNotBlank(cate),"cate", cate).orderBy("cate" , true)
+        Page<ArticleContentEntity> page = this.selectPage(
+                new Query<ArticleContentEntity>(params).getPage(),
+                new EntityWrapper<ArticleContentEntity>().like(StringUtils.isNotBlank(key),"id", key)
         );
 
         return new PageUtils(page);
     }
 
     @Override
-    public List<HtmlPartEntity> queryList(Map<String, Object> params){
-        List<HtmlPartEntity> list = this.selectList(
-                new EntityWrapper<HtmlPartEntity>()
+    public List<ArticleContentEntity> queryList(Map<String, Object> params){
+        List<ArticleContentEntity> list = this.selectList(
+                new EntityWrapper<ArticleContentEntity>()
         );
         return list;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void save(HtmlPartEntity entity) {
+    public void save(ArticleContentEntity entity) {
         this.insert(entity);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(HtmlPartEntity entity) {
+    public void update(ArticleContentEntity entity) {
         this.updateById(entity);
     }
 

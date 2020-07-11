@@ -66,7 +66,7 @@ public class HtmlController {
     public R pa(){
         try {
             List<String> files = new ArrayList<String>();
-            File file = new File("D:\\e\\H5");
+            File file = new File("C:\\Users\\Administrator\\Downloads\\1");
             File[] tempList = file.listFiles();
 
             List<HtmlPartEntity> htmlList = new ArrayList<>();
@@ -74,12 +74,13 @@ public class HtmlController {
                 if (tempList[i].isFile()) {
                     HtmlPartEntity entity = new HtmlPartEntity();
 
-                    entity.setTitle(tempList[i].getName().replace(".zip",""));
+                    entity.setTitle(tempList[i].getName().replace(".zip","").replace("【推荐】", ""));
+//                    entity.setImgUrl();
                     entity.setDownloadUrl("uploadFile/gamezip/" + tempList[i].getName());
                     entity.setSize(((float)tempList[i].length())/1024/2014);
                     entity.setIsMobile(1L);
-                    entity.setKeys(entity.getTitle() + ",前端免费代码下载");
-                    entity.setCate("游戏");
+                    entity.setKeys(entity.getTitle() + ",H5特效源代码");
+                    entity.setCate("特效");
                     htmlList.add(entity);
                     //文件名，不包含路径
                     //String fileName = tempList[i].getName();
