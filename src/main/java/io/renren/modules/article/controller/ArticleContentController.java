@@ -1,11 +1,16 @@
 package io.renren.modules.article.controller;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.List;
 
+import io.renren.common.utils.FileUtil;
+import io.renren.modules.article.entity.ArticleNovelEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +21,7 @@ import io.renren.modules.article.entity.ArticleContentEntity;
 import io.renren.modules.article.service.ArticleContentService;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
-
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -28,6 +33,9 @@ import io.renren.common.utils.R;
 @RestController
 @RequestMapping("article/content")
 public class ArticleContentController {
+    @Value("${spring.file.upReportFolder}")
+    private String upReportFolder;
+
     @Autowired
     private ArticleContentService articleContentService;
 
@@ -54,6 +62,16 @@ public class ArticleContentController {
     }
 
     /**
+     * 列表
+     */
+    @RequestMapping("/getSectionList")
+    public R getSectionList(@RequestParam Map<String, Object> params){
+        List<ArticleContentEntity> list = articleContentService.getSectionList(params);
+
+        return R.ok().put("list", list);
+    }
+
+    /**
      * 信息
      */
     @RequestMapping("/info/{id}")
@@ -70,6 +88,7 @@ public class ArticleContentController {
     @RequestMapping("/save")
     @RequiresPermissions("article:content:save")
     public R save(@RequestBody ArticleContentEntity articleContent){
+        articleContent.setCreateTime(new Date());
 		articleContentService.save(articleContent);
 
         return R.ok();
@@ -97,4 +116,21 @@ public class ArticleContentController {
         return R.ok();
     }
 
+    /**
+     * 提交图片
+     */
+    @RequestMapping("/uploadEditorImg")
+    public R uploadEditorImg(MultipartFile file, @RequestParam("sectionNo") String sectionNo) {
+        String imgName = sectionNo + ".png";
+        try {
+            String filePath = FileUtil.setFilePath(upReportFolder, imgName , true);
+            File dest = new File(filePath);
+            imgName = dest.getName();
+            file.transferTo(dest);
+        }catch (Exception ex){
+            return R.error();
+        }
+
+        return R.ok().put("errno",0).put("imgName",imgName);
+    }
 }

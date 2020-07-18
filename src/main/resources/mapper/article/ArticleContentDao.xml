@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.article.dao.ArticleContentDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.article.entity.ArticleContentEntity" id="articleContentMap">
+        <result property="id" column="id"/>
+        <result property="sectionName" column="section_name"/>
+        <result property="content" column="content"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="affixFile" column="affix_file"/>
+        <result property="createTime" column="create_time"/>
+        <result property="novelId" column="novel_id"/>
+        <result property="novelName" column="novel_name"/>
+        <result property="menuFlag" column="menu_flag"/>
+        <result property="orderNum" column="order_num"/>
+    </resultMap>
+
+    <select id="getSectionList" resultMap="articleContentMap">
+        select id,section_name,parent_id,order_num,create_time,menu_flag from article_content
+        where novel_id = '${novelId}'
+        order by order_num
+    </select>
+
+</mapper>

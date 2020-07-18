@@ -4,6 +4,9 @@ import io.renren.modules.article.entity.ArticleNovelEntity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 书目列表
  * 
@@ -12,5 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ArticleNovelDao extends BaseMapper<ArticleNovelEntity> {
-	
+
 }

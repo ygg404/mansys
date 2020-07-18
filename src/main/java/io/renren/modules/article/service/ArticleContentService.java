@@ -3,6 +3,7 @@ package io.renren.modules.article.service;
 import com.baomidou.mybatisplus.service.IService;
 import io.renren.common.utils.PageUtils;
 import io.renren.modules.article.entity.ArticleContentEntity;
+import io.renren.modules.article.entity.ArticleNovelEntity;
 
 import java.util.Map;
 import java.util.List;
@@ -18,6 +19,8 @@ public interface ArticleContentService extends IService<ArticleContentEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     List<ArticleContentEntity> queryList(Map<String, Object> params);
+
+    List<ArticleContentEntity> getSectionList(Map<String, Object> params);
 
     void save(ArticleContentEntity entity);
 

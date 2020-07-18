@@ -19,6 +19,7 @@ public interface ArticleNovelService extends IService<ArticleNovelEntity> {
 
     List<ArticleNovelEntity> queryList(Map<String, Object> params);
 
+
     void save(ArticleNovelEntity entity);
 
     void update(ArticleNovelEntity entity);

@@ -34,11 +34,13 @@ public class ArticleNovelServiceImpl extends ServiceImpl<ArticleNovelDao, Articl
 
     @Override
     public List<ArticleNovelEntity> queryList(Map<String, Object> params){
+
         List<ArticleNovelEntity> list = this.selectList(
-                new EntityWrapper<ArticleNovelEntity>()
-        );
+                new EntityWrapper<ArticleNovelEntity>());
         return list;
     }
+
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)

@@ -3,6 +3,7 @@ package io.renren.modules.article.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import io.renren.modules.article.entity.ArticleNovelEntity;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,10 +35,16 @@ public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentDao, Ar
 
     @Override
     public List<ArticleContentEntity> queryList(Map<String, Object> params){
+        String novelId = (String) params.get("novelId");
         List<ArticleContentEntity> list = this.selectList(
-                new EntityWrapper<ArticleContentEntity>()
+                new EntityWrapper<ArticleContentEntity>().eq(StringUtils.isNotBlank(novelId),"novel_id", novelId)
         );
         return list;
+    }
+
+    @Override
+    public List<ArticleContentEntity> getSectionList(Map<String, Object> params){
+        return  this.baseMapper.getSectionList(params);
     }
 
     @Override
